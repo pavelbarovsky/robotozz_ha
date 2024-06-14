@@ -1,0 +1,220 @@
+esphome:
+  name: oz-2
+  friendly_name: oz_2
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+
+api:
+  encryption:
+    key: "VgZhzyl7xpXrdK6EmQXhhkgvmo6w6oXrxZwalpkZtHw="
+
+ota:
+  password: "22371a2a3f63a126911cbc5a5b82241e"
+
+servo:
+  - id: my_servo
+    output: pwm_output
+    transition_length: 2.0s
+
+fan:
+  # мотор 1
+  - platform: hbridge
+    id: my_fan_1
+    name: "Мотор 1"
+    pin_a: motor_1_forward_pin
+    pin_b: motor_1_reverse_pin
+    enable_pin: motor_1_enable
+    decay_mode: slow
+    #internal: True
+
+  - platform: hbridge
+    id: my_fan_2
+    name: "Мотор 2"
+    pin_a: motor_2_forward_pin
+    pin_b: motor_2_reverse_pin
+    enable_pin: motor_2_enable
+    decay_mode: slow
+Продолжение приложения И
+  - platform: hbridge
+    id: actuator_1
+    name: "актуатор 1"
+    pin_a: actuator_1_forward_pin
+    pin_b: actuator_1_reverse_pin
+    enable_pin: actuator_1_enable
+    decay_mode: slow
+
+output:
+  - platform: ledc
+    id: motor_1_forward_pin
+    pin: 27
+  - platform: ledc
+    id: motor_1_reverse_pin
+    pin: 26
+  - platform: ledc
+    id: motor_1_enable
+    pin: 14
+    frequency: 1000 Hz
+
+  - platform: ledc
+    id: motor_2_forward_pin
+    pin: 23
+  - platform: ledc
+    id: motor_2_reverse_pin
+    pin: 25
+  - platform: ledc
+    id: motor_2_enable
+    pin: 15
+    frequency: 1000 Hz
+
+  - platform: ledc
+    id: actuator_1_forward_pin
+    pin: 18
+  - platform: ledc
+    id: actuator_1_reverse_pin
+    pin: 19
+  - platform: ledc
+    id: actuator_1_enable
+    pin: 5
+    frequency: 1000 Hz
+
+  - platform: ledc
+    id: pwm_output
+    pin: 18
+    frequency: 50 Hz
+Продолжение приложения И
+cover:
+  - platform: template
+    name: "Мотор 1"
+    id: motor_1_cover
+    optimistic: true
+    open_action:
+      - output.turn_on: motor_1_forward_pin
+      - output.turn_off: motor_1_reverse_pin
+      - output.set_level:
+          id: motor_1_forward_pin
+          level: 0.5  # Максимальная скорость
+    close_action:
+      - output.turn_on: motor_1_reverse_pin
+      - output.turn_off: motor_1_forward_pin
+      - output.set_level:
+          id: motor_1_reverse_pin
+          level: 0.5  # Максимальная скорость
+    stop_action:
+      - output.turn_off: motor_1_forward_pin
+      - output.turn_off: motor_1_reverse_pin
+    assumed_state: true
+
+  - platform: template
+    name: "Мотор 2"
+    id: motor_2_cover
+    optimistic: true
+    open_action:
+      - output.turn_on: motor_2_forward_pin
+      - output.turn_off: motor_2_reverse_pin
+      - output.set_level:
+          id: motor_2_forward_pin
+          level: 0.5  # Максимальная скорость
+    close_action:
+      - output.turn_on: motor_2_reverse_pin
+      - output.turn_off: motor_2_forward_pin
+      - output.set_level:
+          id: motor_2_reverse_pin
+          level: 0.5  # Максимальная скорость
+    stop_action:
+      - output.turn_off: motor_2_forward_pin
+      - output.turn_off: motor_2_reverse_pin
+    assumed_state: true
+
+  - platform: template
+    name: "актуатор"
+    id: actuator_1_cover
+Продолжение приложения И
+    optimistic: true
+    open_action:
+      - output.turn_on: actuator_1_forward_pin
+      - output.turn_off: actuator_1_reverse_pin
+      - delay: 1.3s  # время за которое выдвинем половину штока
+      - output.turn_off: actuator_1_forward_pin
+    close_action:
+      - output.turn_on: actuator_1_reverse_pin
+      - output.turn_off: actuator_1_forward_pin
+    stop_action:
+      - output.turn_off: actuator_1_forward_pin
+      - output.turn_off: actuator_1_reverse_pin
+    assumed_state: true
+
+switch:
+  - platform: template
+    name: "Вкл/выкл мотор 1"
+    optimistic: True
+    turn_on_action:
+      - output.turn_on: motor_1_enable
+      - output.turn_off: motor_1_reverse_pin
+      - output.turn_off: motor_1_forward_pin
+    turn_off_action:
+      - output.turn_off: motor_1_enable
+      - output.turn_off: motor_1_reverse_pin
+      - output.turn_off: motor_1_forward_pin
+
+  - platform: template
+    name: "Вкл/выкл мотор 2"
+    optimistic: True
+    turn_on_action:
+      - output.turn_on: motor_2_enable
+      - output.turn_off: motor_2_reverse_pin
+      - output.turn_off: motor_2_forward_pin
+    turn_off_action:
+      - output.turn_off: motor_2_enable
+      - output.turn_off: motor_2_reverse_pin
+      - output.turn_off: motor_2_forward_pin
+
+  - platform: template
+    name: "Вкл/выкл акутатор"
+    optimistic: True
+    turn_on_action:
+      - output.turn_on: actuator_1_enable
+      - output.turn_off: actuator_1_reverse_pin
+      - output.turn_off: actuator_1_forward_pin
+Продолжение приложения И
+    turn_off_action:
+      - output.turn_off: actuator_1_enable
+      - output.turn_off: actuator_1_reverse_pin
+      - output.turn_off: actuator_1_forward_pin
+
+  - platform: template
+    name: "взять"
+    optimistic: True
+    turn_on_action:
+      - output.turn_on: actuator_1_forward_pin
+      - output.turn_off: actuator_1_reverse_pin
+      - delay: 1.3s  # время за которое выдвинем половину штока
+      - output.turn_off: actuator_1_forward_pin
+    turn_off_action:
+      - output.turn_on: actuator_1_reverse_pin
+      - output.turn_off: actuator_1_forward_pin
+
+  - platform: template
+    name: "тянуть"
+    optimistic: true
+    turn_on_action:
+      - servo.write:
+          id: my_servo
+          level: 1.0
+    turn_off_action:
+      - servo.write:
+          id: my_servo
+          level: 0.0
+
+wifi:
+  ssid: "ALEX"
+  password: "12345678"
+
+  ap:
+    ssid: "Oz-2 Fallback Hotspot"
+    password: "UswdkP4ZgqVY"
+captive_portal:
