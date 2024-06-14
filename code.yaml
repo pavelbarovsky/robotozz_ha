@@ -39,7 +39,7 @@ fan:
     pin_b: motor_2_reverse_pin
     enable_pin: motor_2_enable
     decay_mode: slow
-Продолжение приложения И
+    
   - platform: hbridge
     id: actuator_1
     name: "актуатор 1"
@@ -86,7 +86,7 @@ output:
     id: pwm_output
     pin: 18
     frequency: 50 Hz
-Продолжение приложения И
+
 cover:
   - platform: template
     name: "Мотор 1"
@@ -133,7 +133,7 @@ cover:
   - platform: template
     name: "актуатор"
     id: actuator_1_cover
-Продолжение приложения И
+
     optimistic: true
     open_action:
       - output.turn_on: actuator_1_forward_pin
@@ -180,7 +180,7 @@ switch:
       - output.turn_on: actuator_1_enable
       - output.turn_off: actuator_1_reverse_pin
       - output.turn_off: actuator_1_forward_pin
-Продолжение приложения И
+
     turn_off_action:
       - output.turn_off: actuator_1_enable
       - output.turn_off: actuator_1_reverse_pin
